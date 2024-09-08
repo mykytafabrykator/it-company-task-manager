@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Username: {{ worker.username }}
+  </h1>
+
+  <p><strong>First name:</strong> {{ worker.first_name }}</p>
+  <p><strong>Last name:</strong> {{ worker.last_name }}</p>
+  <p><strong>Position:</strong> {{ worker.position }}</p>
+
+  <p><strong>Teams:</strong>
+    {% if worker.teams.all %}
+      <ul>
+        {% for team in worker.teams.all %}
+          <li>{{ team.name }}</li>
+        {% empty %}
+          <li>No teams assigned.</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      No teams assigned.
+    {% endif %}
+  </p>
+
+  <p><strong>Projects:</strong>
+    {% if worker.teams.all %}
+      <ul>
+        {% for team in worker.teams.all %}
+          {% for project in team.projects.all %}
+            <li>{{ project.name }}</li>
+          {% empty %}
+            <li>No projects in team {{ team.name }}.</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      No projects assigned.
+    {% endif %}
+  </p>
+
+  <a href="{% url 'task:worker-update' pk=worker.id %}" class="btn btn-primary">Update</a>
+  <a href="{% url 'task:worker-delete' pk=worker.id %}" class="btn btn-danger">Delete</a>
+{% endblock %}
