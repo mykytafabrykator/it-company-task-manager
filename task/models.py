@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.urls import reverse
 
 PRIORITY_CHOICES = [
     ("URGENT", "Urgent"),
@@ -38,6 +39,9 @@ class Worker(AbstractUser):
         null=True,
         blank=True,
     )
+
+    def get_absolute_url(self):
+        return reverse("task:worker-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -82,7 +86,11 @@ class Task(models.Model):
         related_name="tasks",
     )
 
-    assignees = models.ManyToManyField(Worker, related_name="assigned_tasks")
+    assignees = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="assigned_tasks",
+        blank=True,
+    )
 
     project = models.ForeignKey(
         Project,
