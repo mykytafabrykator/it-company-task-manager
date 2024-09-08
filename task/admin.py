@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 
 from task.models import TaskType, Position, Worker, Team, Project, Task
 
@@ -25,10 +26,6 @@ class WorkerAdmin(UserAdmin):
         )
     )
 
-
-admin.site.register(TaskType)
-admin.site.register(Position)
-
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ("name", )
@@ -41,3 +38,7 @@ class TeamAdmin(admin.ModelAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ("name", )
+
+admin.site.register(TaskType)
+admin.site.register(Position)
+admin.site.unregister(Group)
