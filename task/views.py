@@ -23,6 +23,10 @@ def index(request):
 
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
+    queryset = (Worker.objects.all()
+                .select_related("position")
+                .prefetch_related("teams__projects")
+                .order_by("username"))
     paginate_by = 5
 
 
@@ -36,7 +40,7 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Worker
-    fields = ("first_name", "last_name", "email", "position")
+    form_class = WorkerForm
     success_url = reverse_lazy("task:worker-list")
 
 
