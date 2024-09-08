@@ -26,18 +26,22 @@ class WorkerAdmin(UserAdmin):
         )
     )
 
+
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ("name", )
     list_filter = ("assignees", "task_type", "priority")
 
+
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
     search_fields = ("name", )
 
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ("name", )
+
 
 admin.site.register(TaskType)
 admin.site.register(Position)
