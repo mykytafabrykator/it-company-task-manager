@@ -1,14 +1,14 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
 from task.models import Worker, Team
 
 
-class WorkerForm(UserCreationForm):
+class WorkerCreateForm(UserCreationForm):
     teams = forms.ModelMultipleChoiceField(
         queryset=Team.objects.all(),
         required=False,
-        widget=forms.CheckboxSelectMultiple,  # You can customize this widget
+        widget=forms.CheckboxSelectMultiple,
     )
 
     class Meta(UserCreationForm.Meta):
@@ -19,3 +19,25 @@ class WorkerForm(UserCreationForm):
             "position",
             "teams",
         )
+
+
+class WorkerUpdateForm(UserChangeForm):
+    teams = forms.ModelMultipleChoiceField(
+        queryset=Team.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Worker
+        fields = (
+            "first_name",
+            "last_name",
+            "position",
+            "teams",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "password" in self.fields:
+            del self.fields["password"]

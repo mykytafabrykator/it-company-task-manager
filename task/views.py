@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task.forms import WorkerForm
+from task.forms import WorkerCreateForm, WorkerUpdateForm
 from task.models import Worker, Project, Team
 
 
@@ -40,8 +40,12 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Worker
-    form_class = WorkerForm
-    success_url = reverse_lazy("task:worker-list")
+    form_class = WorkerUpdateForm
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        form.instance.teams.set(form.cleaned_data["teams"])
+        return response
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -51,4 +55,9 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
-    form_class = WorkerForm
+    form_class = WorkerCreateForm
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        form.instance.teams.set(form.cleaned_data["teams"])
+        return response
