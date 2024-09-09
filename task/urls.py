@@ -12,6 +12,10 @@ from task.views import (
     PositionCreateView,
     PositionUpdateView,
     PositionDeleteView,
+    TeamListView,
+    TeamCreateView,
+    TeamDetailView,
+    TeamUpdateView, TeamDeleteView,
 )
 
 urlpatterns = [
@@ -57,6 +61,19 @@ urlpatterns = [
         "positions/<int:pk>/delete/",
         PositionDeleteView.as_view(),
         name="position-delete"
+    ),
+    path("teams/", TeamListView.as_view(), name="team-list"),
+    path("teams/create/", TeamCreateView.as_view(), name="team-create"),
+    path("teams/<int:pk>/", TeamDetailView.as_view(), name="team-detail"),
+    path(
+        "teams/<int:pk>/update/",
+        TeamUpdateView.as_view(),
+        name="team-update"
+    ),
+    path(
+        "teams/<int:pk>/delete/",
+        TeamDeleteView.as_view(),
+        name="team-delete"
     ),
 ]
 

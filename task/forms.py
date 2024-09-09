@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
-from task.models import Worker, Team
+from task.models import Worker, Team, Project
 
 
 class WorkerCreateForm(UserCreationForm):
@@ -41,3 +41,21 @@ class WorkerUpdateForm(UserChangeForm):
         super().__init__(*args, **kwargs)
         if "password" in self.fields:
             del self.fields["password"]
+
+
+class TeamUpdateForm(forms.ModelForm):
+    projects = forms.ModelMultipleChoiceField(
+        queryset=Project.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    workers = forms.ModelMultipleChoiceField(
+        queryset=Worker.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Team
+        fields = ("name", "workers", "projects",)

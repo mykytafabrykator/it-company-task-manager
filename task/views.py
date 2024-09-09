@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task.forms import WorkerCreateForm, WorkerUpdateForm
+from task.forms import WorkerCreateForm, WorkerUpdateForm, TeamUpdateForm
 from task.models import Worker, Project, Team, Position
 
 
@@ -16,6 +16,7 @@ def index(request):
         "num_workers": Worker.objects.count(),
         "num_projects": Project.objects.count(),
         "num_teams": Team.objects.count(),
+        "num_positions": Position.objects.count(),
     }
 
     return render(request, "task/index.html", context=context)
@@ -99,3 +100,28 @@ class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
 class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Position
     success_url = reverse_lazy("task:position-list")
+
+
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    model = Team
+    paginate_by = 5
+
+
+class TeamCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Team
+    fields = ("name", "workers", "projects", )
+    success_url = reverse_lazy("task:team-list")
+
+
+class TeamDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Team
+
+
+class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Team
+    form_class = TeamUpdateForm
+
+
+class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Team
+    success_url = reverse_lazy("task:team-list")
