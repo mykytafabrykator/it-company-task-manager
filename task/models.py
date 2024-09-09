@@ -10,6 +10,7 @@ PRIORITY_CHOICES = [
     ("LOW", "Low"),
 ]
 
+
 class TaskType(models.Model):
     name = models.CharField(max_length=255)
 
@@ -63,14 +64,24 @@ class Team(models.Model):
         settings.AUTH_USER_MODEL,
         related_name="teams",
         blank=True,
-        null=True,
     )
     projects = models.ManyToManyField(
         Project,
         related_name="teams",
         blank=True,
-        null=True,
     )
+
+    def get_absolute_url(self):
+        return reverse("task:team-detail", kwargs={"pk": self.pk})
+
+    def delete(self, *args, **kwargs):
+        related_projects = list(self.projects.all())
+
+        super().delete(*args, **kwargs)
+
+        for project in related_projects:
+            if project.teams.count() == 0:
+                project.delete()
 
     def __str__(self):
         return self.name
