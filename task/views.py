@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from task.forms import WorkerCreateForm, WorkerUpdateForm, TeamUpdateForm
-from task.models import Worker, Project, Team, Position
+from task.models import Worker, Project, Team, Position, TaskType, Task
 
 
 @login_required
@@ -17,6 +17,7 @@ def index(request):
         "num_projects": Project.objects.count(),
         "num_teams": Team.objects.count(),
         "num_positions": Position.objects.count(),
+        "num_task_types": TaskType.objects.count(),
     }
 
     return render(request, "task/index.html", context=context)
@@ -153,3 +154,42 @@ class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Project
     success_url = reverse_lazy("task:project-list")
+
+
+class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+    model = TaskType
+    paginate_by = 5
+    context_object_name = "task_type_list"
+    template_name = "task/task_type_list.html"
+
+
+class TaskTypeDetailView(LoginRequiredMixin, generic.DetailView):
+    model = TaskType
+    template_name = "task/task_type_detail.html"
+    context_object_name = "task_type"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tasks"] = Task.objects.filter(task_type=self.object)
+        return context
+
+
+class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
+    model = TaskType
+    fields = ("name", )
+    template_name = "task/task_type_form.html"
+    success_url = reverse_lazy("task:task-type-list")
+
+
+class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = TaskType
+    fields = ("name", )
+    template_name = "task/task_type_form.html"
+    success_url = reverse_lazy("task:task-type-list")
+
+
+class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = TaskType
+    template_name = "task/task_type_confirm_delete.html"
+    context_object_name = "task_type"
+    success_url = reverse_lazy("task:task-type-list")

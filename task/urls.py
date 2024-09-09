@@ -22,6 +22,11 @@ from task.views import (
     ProjectCreateView,
     ProjectUpdateView,
     ProjectDeleteView,
+    TaskTypeListView,
+    TaskTypeDetailView,
+    TaskTypeCreateView,
+    TaskTypeUpdateView,
+    TaskTypeDeleteView,
 )
 
 urlpatterns = [
@@ -101,6 +106,27 @@ urlpatterns = [
         "projects/<int:pk>/delete/",
         ProjectDeleteView.as_view(),
         name="project-delete",
+    ),
+    path("task-type/", TaskTypeListView.as_view(), name="task-type-list"),
+    path(
+        "task-type/<int:pk>/",
+        TaskTypeDetailView.as_view(),
+        name="task-type-detail",
+    ),
+    path(
+        "task-type/create/",
+        TaskTypeCreateView.as_view(),
+        name="task-type-create",
+    ),
+    path(
+        "task-type/<int:pk>/update/",
+        TaskTypeUpdateView.as_view(),
+        name="task-type-update",
+    ),
+    path(
+        "task-type/<int:pk>/delete/",
+        TaskTypeDeleteView.as_view(),
+        name="task-type-delete",
     ),
 ]
 

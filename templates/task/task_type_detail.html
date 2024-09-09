@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Task Type: {{ task_type.name }}
+  </h1>
+
+  <h2>Related Tasks:</h2>
+  {% if tasks %}
+    <ul>
+      {% for task in tasks %}
+        <li>{{ task.name }} - Deadline: {{ task.deadline }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No tasks are associated with this Task Type.</p>
+  {% endif %}
+
+  <a href="{% url 'task:task-type-update' pk=task_type.id %}" class="btn btn-primary">Update</a>
+  <a href="{% url 'task:task-type-delete' pk=task_type.id %}" class="btn btn-danger">Delete</a>
+
+{% endblock %}
