@@ -32,19 +32,26 @@ def index(request):
 
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
-    queryset = (Worker.objects.all()
-                .select_related("position")
-                .prefetch_related("teams__projects")
-                .order_by("username"))
     paginate_by = 5
+
+    def get_queryset(self):
+        return Worker.objects.select_related("position") \
+            .prefetch_related(
+                "teams__projects",
+                "projects",
+            ).order_by("username")
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Worker
-    queryset = (Worker.objects.all()
-                .select_related("position")
-                .prefetch_related("teams__projects")
-                .order_by("username"))
+
+    def get_queryset(self):
+        return Worker.objects.select_related("position") \
+            .prefetch_related(
+                "teams__projects",
+                "projects",
+                "assigned_tasks__project",
+            )
 
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -54,13 +61,17 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(
             Worker.objects.select_related("position")
-            .prefetch_related("teams"),
+            .prefetch_related("teams", "projects"),
             pk=self.kwargs["pk"]
         )
 
     def form_valid(self, form):
         response = super().form_valid(form)
         form.instance.teams.set(form.cleaned_data["teams"])
+
+        if "projects" in form.cleaned_data:
+            form.instance.projects.set(form.cleaned_data["projects"])
+
         return response
 
 
@@ -118,6 +129,7 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = Team
     form_class = TeamForm
+
 
 class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = Team

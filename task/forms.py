@@ -28,6 +28,12 @@ class WorkerUpdateForm(UserChangeForm):
         widget=forms.CheckboxSelectMultiple,
     )
 
+    projects = forms.ModelMultipleChoiceField(
+        queryset=Project.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
     class Meta:
         model = Worker
         fields = (
@@ -39,6 +45,19 @@ class WorkerUpdateForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        worker = kwargs.get("instance")
+
+        if worker:
+            team_projects = Project.objects.filter(
+                teams__in=worker.teams.all()).distinct()
+            if team_projects.exists():
+                self.fields["projects"].queryset = team_projects
+                self.fields["projects"].initial = worker.projects.all()
+            else:
+                self.fields.pop("projects")
+
+        self.fields["teams"].initial = worker.teams.all()
+
         if "password" in self.fields:
             del self.fields["password"]
 
