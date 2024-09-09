@@ -53,6 +53,11 @@ class Worker(AbstractUser):
 class Project(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    workers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="projects",
+        blank=True,
+    )
 
     def get_absolute_url(self):
         return reverse("task:project-detail", kwargs={"pk": self.pk})
