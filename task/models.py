@@ -10,7 +10,6 @@ PRIORITY_CHOICES = [
     ("LOW", "Low"),
 ]
 
-
 class TaskType(models.Model):
     name = models.CharField(max_length=255)
 
@@ -50,21 +49,27 @@ class Worker(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
 
-class Team(models.Model):
+class Project(models.Model):
     name = models.CharField(max_length=255)
-    workers = models.ManyToManyField(Worker, related_name="teams")
+    description = models.TextField()
 
     def __str__(self):
         return self.name
 
 
-class Project(models.Model):
+class Team(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
-    team = models.ForeignKey(
-        Team,
-        on_delete=models.CASCADE,
-        related_name="projects",
+    workers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="teams",
+        blank=True,
+        null=True,
+    )
+    projects = models.ManyToManyField(
+        Project,
+        related_name="teams",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
