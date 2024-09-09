@@ -27,6 +27,9 @@ class Position(models.Model):
     class Meta:
         ordering = ["name"]
 
+    def get_absolute_url(self):
+        return reverse("task:position-detail", kwargs={"pk": self.pk})
+
     def __str__(self):
         return self.name
 

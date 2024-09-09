@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
 from task.forms import WorkerCreateForm, WorkerUpdateForm
-from task.models import Worker, Project, Team
+from task.models import Worker, Project, Team, Position
 
 
 @login_required
@@ -42,6 +42,12 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Worker
     form_class = WorkerUpdateForm
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Worker.objects.select_related("position").prefetch_related("teams"),
+            pk=self.kwargs["pk"]
+        )
+
     def form_valid(self, form):
         response = super().form_valid(form)
         form.instance.teams.set(form.cleaned_data["teams"])
@@ -52,6 +58,12 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("task:worker-list")
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Worker.objects.select_related("position").prefetch_related("teams"),
+            pk=self.kwargs["pk"]
+        )
+
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
@@ -61,3 +73,27 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
         response = super().form_valid(form)
         form.instance.teams.set(form.cleaned_data["teams"])
         return response
+
+
+class PositionListView(LoginRequiredMixin, generic.ListView):
+    model = Position
+    paginate_by = 5
+
+
+class PositionDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Position
+
+
+class PositionCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Position
+    fields = "__all__"
+
+
+class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Position
+    fields = "__all__"
+
+
+class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Position
+    success_url = reverse_lazy("task:position-list")

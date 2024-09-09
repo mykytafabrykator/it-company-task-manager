@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Positions List <a href="{% url 'task:position-create' %}" class="btn btn-primary">Create</a></h1>
+    {% if position_list %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+    {% for position in position_list %}
+      <tr>
+        <td>{{ position.id }}</td>
+        <td><a href="{% url 'task:position-detail' pk=position.id %}">{{ position.name }}</a></td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no positions in the service.</p>
+    {% endif %}
+{% endblock %}
