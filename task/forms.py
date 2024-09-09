@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
-from task.models import Worker, Team, Project
+from task.models import Worker, Team, Project, Task
 
 
 class WorkerCreateForm(UserCreationForm):
@@ -59,3 +59,16 @@ class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("name", "workers", "projects",)
+
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ("name", "description",
+                  "deadline", "priority",
+                  "task_type", "assignees",
+                  "project", )
+        widgets = {
+            "deadline": forms.DateInput(attrs={"type": "date"}),
+            "assignees": forms.CheckboxSelectMultiple,
+        }

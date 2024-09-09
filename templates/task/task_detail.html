@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Task: {{ task.name }}</h1>
+  <p>Description: {{ task.description }}</p>
+  <p>Deadline: {{ task.deadline }}</p>
+  <p>Priority: {{ task.get_priority_display }}</p>
+  <p>Task Type: {{ task.task_type.name }}</p>
+
+  <p>Is Completed:
+    <a href="{% url 'task:task-toggle-complete' task.pk %}">
+      {{ task.is_completed|yesno:"Yes,No" }}
+    </a>
+  </p>
+
+  <p>Assigned Workers:</p>
+  <ul>
+    {% for worker in task.assignees.all %}
+      <li>{{ worker.first_name }} {{ worker.last_name }}</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Toggle assignment of the current user -->
+  <p>
+    Assigned to this task:
+    <a href="{% url 'task:task-toggle-assign' task.pk %}">
+      {% if user in task.assignees.all %}
+        Yes (Click to remove)
+      {% else %}
+        No (Click to assign)
+      {% endif %}
+    </a>
+  </p>
+
+  <p>Project: <a href="{% url 'task:project-detail' task.project.pk %}">{{ task.project.name }}</a></p>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <a href="{% url 'task:task-update' task.pk %}" class="btn btn-primary">Update</a>
+  <a href="{% url 'task:task-delete' task.pk %}" class="btn btn-danger">Delete</a>
+{% endblock %}

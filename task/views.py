@@ -1,10 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task.forms import WorkerCreateForm, WorkerUpdateForm, TeamUpdateForm
+from task.forms import (
+    WorkerCreateForm,
+    WorkerUpdateForm,
+    TeamUpdateForm,
+    TaskForm,
+)
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
 
@@ -193,3 +199,82 @@ class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "task/task_type_confirm_delete.html"
     context_object_name = "task_type"
     success_url = reverse_lazy("task:task-type-list")
+
+
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+
+    def get_queryset(self):
+        return (Task.objects.all()
+                .select_related("project")
+                .prefetch_related("assignees"))
+
+
+class TaskDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Task
+
+    def get_queryset(self):
+        return (Task.objects.select_related("project")
+                .prefetch_related("assignees"))
+
+
+class TaskCreateView(generic.CreateView):
+    model = Task
+    form_class = TaskForm
+    success_url = reverse_lazy("task:task-list")
+
+
+class TaskUpdateView(generic.UpdateView):
+    model = Task
+    form_class = TaskForm
+    success_url = reverse_lazy("task:task-list")
+
+
+class TaskDeleteView(generic.DeleteView):
+    model = Task
+    success_url = reverse_lazy("task:task-list")
+
+
+@login_required
+def toggle_task_complete(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+
+    user_teams = request.user.teams.all()
+    task_teams = task.project.teams.all()
+
+    if (user_teams.intersection(task_teams) or
+            request.user in
+            task.project.teams.values_list("workers", flat=True)):
+        task.is_completed = not task.is_completed
+        task.save()
+    else:
+        messages.error(request,
+                       "You are not part of the team or project"
+                       "associated with this task, so"
+                       "you cannot mark it as completed.")
+
+    return redirect("task:task-detail", pk=task.pk)
+
+
+@login_required
+def toggle_task_assign(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+
+    user_teams = request.user.teams.all()
+    task_teams = task.project.teams.all()
+
+    if (user_teams.intersection(task_teams) or
+            request.user in
+            task.project.teams.values_list("workers", flat=True)):
+        if request.user in task.assignees.all():
+            task.assignees.remove(request.user)
+        else:
+            task.assignees.add(request.user)
+        task.save()
+    else:
+        messages.error(request,
+                       "You are not part of the team or project"
+                       "associated with this task, so"
+                       "you cannot assign yourself to it.")
+
+    return redirect("task:task-detail", pk=task.pk)

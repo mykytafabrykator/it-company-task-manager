@@ -9,7 +9,7 @@
   <p><strong>Last name:</strong> {{ worker.last_name }}</p>
   <p><strong>Position:</strong> {{ worker.position }}</p>
 
-  <p><strong>Teams:</strong>
+  <p><strong>Teams:</strong></p>
     {% if worker.teams.all %}
       <ul>
         {% for team in worker.teams.all %}
@@ -21,9 +21,8 @@
     {% else %}
       No teams assigned.
     {% endif %}
-  </p>
 
-  <p><strong>Projects:</strong>
+  <p><strong>Projects:</strong></p>
     {% if worker.teams.all %}
       <ul>
         {% for team in worker.teams.all %}
@@ -37,7 +36,19 @@
     {% else %}
       No projects assigned.
     {% endif %}
-  </p>
+
+  <p><strong>Assigned Tasks:</strong></p>
+  {% if worker.assigned_tasks.all %}
+    <ul>
+      {% for task in worker.assigned_tasks.all %}
+        <li>{{ task.name }} (Deadline: {{ task.deadline }} - Project: {{ task.project.name }})</li>
+      {% empty %}
+        <li>No tasks assigned.</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    No tasks assigned. <br>
+  {% endif %}
 
   <a href="{% url 'task:worker-update' pk=worker.id %}" class="btn btn-primary">Update</a>
   <a href="{% url 'task:worker-delete' pk=worker.id %}" class="btn btn-danger">Delete</a>

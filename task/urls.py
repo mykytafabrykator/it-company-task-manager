@@ -27,6 +27,13 @@ from task.views import (
     TaskTypeCreateView,
     TaskTypeUpdateView,
     TaskTypeDeleteView,
+    TaskListView,
+    TaskDetailView,
+    TaskCreateView,
+    TaskUpdateView,
+    TaskDeleteView,
+    toggle_task_complete,
+    toggle_task_assign,
 )
 
 urlpatterns = [
@@ -127,6 +134,29 @@ urlpatterns = [
         "task-type/<int:pk>/delete/",
         TaskTypeDeleteView.as_view(),
         name="task-type-delete",
+    ),
+    path("tasks/", TaskListView.as_view(), name="task-list"),
+    path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
+    path("tasks/create/", TaskCreateView.as_view(), name="task-create"),
+    path(
+        "tasks/<int:pk>/update/",
+        TaskUpdateView.as_view(),
+        name="task-update",
+    ),
+    path(
+        "tasks/<int:pk>/delete/",
+        TaskDeleteView.as_view(),
+        name="task-delete",
+    ),
+    path(
+        "tasks/<int:pk>/toggle-complete/",
+        toggle_task_complete,
+        name="task-toggle-complete",
+    ),
+    path(
+        "tasks/<int:pk>/toggle-assign/",
+        toggle_task_assign,
+        name="task-toggle-assign",
     ),
 ]
 
