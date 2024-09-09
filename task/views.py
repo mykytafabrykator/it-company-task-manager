@@ -44,7 +44,8 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(
-            Worker.objects.select_related("position").prefetch_related("teams"),
+            Worker.objects.select_related("position")
+            .prefetch_related("teams"),
             pk=self.kwargs["pk"]
         )
 
@@ -60,7 +61,8 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(
-            Worker.objects.select_related("position").prefetch_related("teams"),
+            Worker.objects.select_related("position")
+            .prefetch_related("teams"),
             pk=self.kwargs["pk"]
         )
 
