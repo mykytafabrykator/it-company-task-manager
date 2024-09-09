@@ -11,10 +11,8 @@
 
   <h2>Assigned Workers:</h2>
   <ul>
-    {% for team in project.teams.all %}
-      {% for worker in team.workers.all %}
-        <li>{{ worker.first_name }} {{ worker.last_name }}</li>
-      {% endfor %}
+    {% for worker in project.workers.all %}
+      <li>{{ worker.first_name }} {{ worker.last_name }}</li>
     {% empty %}
       <li>No workers assigned to this project.</li>
     {% endfor %}

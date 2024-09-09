@@ -23,19 +23,17 @@
     {% endif %}
 
   <p><strong>Projects:</strong></p>
-    {% if worker.teams.all %}
-      <ul>
-        {% for team in worker.teams.all %}
-          {% for project in team.projects.all %}
-            <li>{{ project.name }}</li>
-          {% empty %}
-            <li>No projects in team {{ team.name }}.</li>
-          {% endfor %}
-        {% endfor %}
-      </ul>
-    {% else %}
-      No projects assigned.
-    {% endif %}
+  {% if worker.projects.all %}
+    <ul>
+      {% for project in worker.projects.all %}
+        <li>{{ project.name }}</li>
+      {% empty %}
+        <li>No projects assigned.</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    No tasks assigned. <br>
+  {% endif %}
 
   <p><strong>Assigned Tasks:</strong></p>
   {% if worker.assigned_tasks.all %}
