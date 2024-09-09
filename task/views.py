@@ -10,6 +10,7 @@ from task.forms import (
     WorkerUpdateForm,
     TeamUpdateForm,
     TaskForm,
+    ProjectForm,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -143,18 +144,19 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
 
     def get_queryset(self):
-        return Project.objects.prefetch_related('teams__workers').all()
+        return Project.objects.prefetch_related("teams__workers").all()
 
 
 class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
     model = Project
-    fields = "__all__"
+    fields = ("name", "description", )
     success_url = reverse_lazy("task:project-list")
 
 
 class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Project
-    fields = "__all__"
+    form_class = ProjectForm
+    success_url = reverse_lazy("task:project-list")
 
 
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -239,20 +241,16 @@ class TaskDeleteView(generic.DeleteView):
 def toggle_task_complete(request, pk):
     task = get_object_or_404(Task, pk=pk)
 
-    user_teams = request.user.teams.all()
-    task_teams = task.project.teams.all()
-
-    if (user_teams.intersection(task_teams) or
-            request.user in
-            task.project.teams.values_list("workers", flat=True)):
+    if request.user in task.project.workers.all():
         task.is_completed = not task.is_completed
         task.save()
     else:
-        messages.error(request,
-                       "You are not part of the team or project"
-                       "associated with this task, so"
-                       "you cannot mark it as completed.")
-
+        messages.error(
+            request,
+            "You are not part of the team or project "
+            "associated with this task, so "
+            "you cannot assign yourself to it."
+        )
     return redirect("task:task-detail", pk=task.pk)
 
 
@@ -260,21 +258,17 @@ def toggle_task_complete(request, pk):
 def toggle_task_assign(request, pk):
     task = get_object_or_404(Task, pk=pk)
 
-    user_teams = request.user.teams.all()
-    task_teams = task.project.teams.all()
-
-    if (user_teams.intersection(task_teams) or
-            request.user in
-            task.project.teams.values_list("workers", flat=True)):
+    if request.user in task.project.workers.all():
         if request.user in task.assignees.all():
             task.assignees.remove(request.user)
         else:
             task.assignees.add(request.user)
         task.save()
     else:
-        messages.error(request,
-                       "You are not part of the team or project"
-                       "associated with this task, so"
-                       "you cannot assign yourself to it.")
-
+        messages.error(
+            request,
+            "You are not part of the team or project "
+            "associated with this task, so "
+            "you cannot assign yourself to it."
+        )
     return redirect("task:task-detail", pk=task.pk)
