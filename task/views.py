@@ -8,9 +8,9 @@ from django.views import generic
 from task.forms import (
     WorkerCreateForm,
     WorkerUpdateForm,
-    TeamUpdateForm,
     TaskForm,
     ProjectForm,
+    TeamForm,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -117,9 +117,7 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = Team
-    fields = ("name", "workers", "projects", )
-    success_url = reverse_lazy("task:team-list")
-
+    form_class = TeamForm
 
 class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = Team
@@ -127,7 +125,7 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
 
 class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Team
-    form_class = TeamUpdateForm
+    form_class = TeamForm
 
 
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):

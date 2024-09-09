@@ -43,7 +43,7 @@ class WorkerUpdateForm(UserChangeForm):
             del self.fields["password"]
 
 
-class TeamUpdateForm(forms.ModelForm):
+class TeamForm(forms.ModelForm):
     projects = forms.ModelMultipleChoiceField(
         queryset=Project.objects.all(),
         required=False,
