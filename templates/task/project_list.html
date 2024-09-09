@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Projects List <a href="{% url 'task:project-create' %}" class="btn btn-primary">Create</a></h1>
+    {% if project_list %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+    {% for project in project_list %}
+      <tr>
+        <td>{{ project.id }}</td>
+        <td><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no projects in the service.</p>
+    {% endif %}
+{% endblock %}

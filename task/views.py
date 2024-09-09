@@ -125,3 +125,31 @@ class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Team
     success_url = reverse_lazy("task:team-list")
+
+
+class ProjectListView(LoginRequiredMixin, generic.ListView):
+    model = Project
+    paginate_by = 5
+
+
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Project
+
+    def get_queryset(self):
+        return Project.objects.prefetch_related('teams__workers').all()
+
+
+class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Project
+    fields = "__all__"
+    success_url = reverse_lazy("task:project-list")
+
+
+class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Project
+    fields = "__all__"
+
+
+class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Project
+    success_url = reverse_lazy("task:project-list")
