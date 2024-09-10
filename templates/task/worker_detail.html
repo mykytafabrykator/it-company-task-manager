@@ -9,37 +9,37 @@
   <p><strong>Last name:</strong> {{ worker.last_name }}</p>
   <p><strong>Position:</strong> {{ worker.position }}</p>
 
-  <p><strong>Teams:</strong></p>
     {% if worker.teams.all %}
+      <p><strong>Teams:</strong></p>
       <ul>
         {% for team in worker.teams.all %}
-          <li>{{ team.name }}</li>
+          <li><a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a></li>
         {% empty %}
           <li>No teams assigned.</li>
         {% endfor %}
       </ul>
     {% else %}
-      No teams assigned.
+      No teams assigned. <br>
     {% endif %}
 
-  <p><strong>Projects:</strong></p>
   {% if worker.projects.all %}
+    <p><strong>Projects:</strong></p>
     <ul>
       {% for project in worker.projects.all %}
-        <li>{{ project.name }}</li>
+        <li><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></li>
       {% empty %}
         <li>No projects assigned.</li>
       {% endfor %}
     </ul>
   {% else %}
-    No tasks assigned. <br>
+    No projects assigned. <br>
   {% endif %}
 
-  <p><strong>Assigned Tasks:</strong></p>
   {% if worker.assigned_tasks.all %}
+    <p><strong>Assigned Tasks:</strong></p>
     <ul>
       {% for task in worker.assigned_tasks.all %}
-        <li>{{ task.name }} (Deadline: {{ task.deadline }} - Project: {{ task.project.name }})</li>
+        <li><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }} (Deadline: {{ task.deadline }} - Project: {{ task.project.name }})</a></li>
       {% empty %}
         <li>No tasks assigned.</li>
       {% endfor %}
