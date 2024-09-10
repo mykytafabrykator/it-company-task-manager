@@ -15,15 +15,16 @@ def handle_project_removal_from_team(
             except Project.DoesNotExist:
                 continue
 
-            workers_to_update = Worker.objects.filter(projects=project)
-            for worker in workers_to_update:
-                worker.projects.remove(project)
+            remaining_teams = project.teams.exclude(id=instance.id)
+            if not remaining_teams.exists():
+                workers_to_update = Worker.objects.filter(projects=project)
+                for worker in workers_to_update:
+                    worker.projects.remove(project)
 
-            tasks_to_update = Task.objects.filter(project=project)
-            for task in tasks_to_update:
-                for worker in task.assignees.all():
-                    if worker in workers_to_update:
-                        task.assignees.remove(worker)
+                tasks_to_update = Task.objects.filter(project=project)
+                for task in tasks_to_update:
+                    for worker in task.assignees.all():
+                        if worker in workers_to_update:
+                            task.assignees.remove(worker)
 
-            if not project.teams.exists():
                 project.delete()
