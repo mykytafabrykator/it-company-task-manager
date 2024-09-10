@@ -62,6 +62,9 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse("task:project-detail", kwargs={"pk": self.pk})
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -90,6 +93,9 @@ class Team(models.Model):
         for project in related_projects:
             if project.teams.count() == 0:
                 project.delete()
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
