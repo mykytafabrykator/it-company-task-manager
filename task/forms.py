@@ -134,15 +134,9 @@ class TeamForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
     )
 
-    workers = forms.ModelMultipleChoiceField(
-        queryset=Worker.objects.all(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
     class Meta:
         model = Team
-        fields = ("name", "workers", "projects",)
+        fields = ("name", "projects",)
 
 
 class TaskForm(forms.ModelForm):

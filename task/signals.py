@@ -3,28 +3,16 @@ from django.dispatch import receiver
 from task.models import Team, Worker, Project, Task
 
 
-@receiver(m2m_changed, sender=Team.workers.through)
-def update_worker_projects_and_tasks(sender, instance,
-                                     action, pk_set, **kwargs):
-
+@receiver(m2m_changed, sender=Team.projects.through)
+def update_worker_projects_on_team_project_change(sender, instance, action, pk_set, **kwargs):
     if action == "post_remove":
-        workers_removed = Worker.objects.filter(pk__in=pk_set)
+        removed_projects = set(pk_set)
+        for project_id in removed_projects:
+            project = Project.objects.get(id=project_id)
+            if not project.teams.exists():
+                for worker in project.workers.all():
+                    worker.projects.remove(project)
 
-        for worker in workers_removed:
-            related_projects = instance.projects.all()
-
-            for project in related_projects:
-                worker_teams_in_project = (
-                    Team.objects.filter(projects=project, workers=worker)
-                )
-
-                if not worker_teams_in_project.exists():
-                    project.workers.remove(worker)
-
-                    tasks = (Task.objects
-                             .filter(project=project, assignees=worker))
-                    for task in tasks:
-                        task.assignees.remove(worker)
 
 
 @receiver(m2m_changed, sender=Project.workers.through)

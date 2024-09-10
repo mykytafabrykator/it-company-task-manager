@@ -68,10 +68,13 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.instance.teams.set(form.cleaned_data["teams"])
+        worker = form.instance
+        selected_teams = form.cleaned_data["teams"]
+        selected_projects = form.cleaned_data["projects"]
 
-        if "projects" in form.cleaned_data:
-            form.instance.projects.set(form.cleaned_data["projects"])
+        worker.teams.set(selected_teams)
+
+        worker.projects.set(selected_projects)
 
         return response
 
