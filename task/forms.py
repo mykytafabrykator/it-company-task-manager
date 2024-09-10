@@ -94,6 +94,24 @@ class WorkerUpdateForm(UserChangeForm):
 
         return cleaned_data
 
+    def save(self, commit=True):
+        worker = super().save(commit=False)
+        current_projects = set(worker.projects.all())
+        selected_projects = set(self.cleaned_data.get("projects"))
+
+        removed_projects = current_projects - selected_projects
+
+        if removed_projects:
+            tasks_to_update = Task.objects.filter(project__in=removed_projects, assignees=worker)
+            for task in tasks_to_update:
+                task.assignees.remove(worker)
+
+        if commit:
+            worker.save()
+            self.save_m2m()
+
+        return worker
+
 
 class TeamForm(forms.ModelForm):
     projects = forms.ModelMultipleChoiceField(
