@@ -10,7 +10,6 @@ PRIORITY_CHOICES = [
     ("LOW", "Low"),
 ]
 
-
 class TaskType(models.Model):
     name = models.CharField(max_length=255)
 
@@ -130,6 +129,9 @@ class Task(models.Model):
         on_delete=models.CASCADE,
         related_name="tasks",
     )
+
+    class Meta:
+        ordering = ["is_completed"]
 
     def __str__(self):
         return f"{self.name} (deadline: {self.deadline})"

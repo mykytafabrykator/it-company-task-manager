@@ -290,3 +290,10 @@ def toggle_task_assign(request, pk):
             "you cannot assign yourself to it."
         )
     return redirect("task:task-detail", pk=task.pk)
+
+
+@login_required
+def my_tasks(request):
+    user = request.user
+    tasks = Task.objects.filter(assignees=user)
+    return render(request, "task/my_tasks.html", {"tasks": tasks})

@@ -34,6 +34,7 @@ from task.views import (
     TaskDeleteView,
     toggle_task_complete,
     toggle_task_assign,
+    my_tasks,
 )
 
 urlpatterns = [
@@ -158,6 +159,7 @@ urlpatterns = [
         toggle_task_assign,
         name="task-toggle-assign",
     ),
+    path('my-tasks/', my_tasks, name='my-task'),
 ]
 
 app_name = "task"

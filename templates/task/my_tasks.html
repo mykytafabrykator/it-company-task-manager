@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>My Tasks List </h1>
+    {% if tasks %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Priority</th>
+        <th>Completed</th>
+      </tr>
+    {% for task in tasks %}
+      <tr>
+        <td>{{ task.id }}</td>
+        <td><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }}</a></td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.is_completed }}</td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>Happy day! No tasks!</p>
+    {% endif %}
+{% endblock %}
