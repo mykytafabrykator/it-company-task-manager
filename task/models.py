@@ -10,6 +10,7 @@ PRIORITY_CHOICES = [
     ("LOW", "Low"),
 ]
 
+
 class TaskType(models.Model):
     name = models.CharField(max_length=255)
 
