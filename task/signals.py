@@ -4,7 +4,8 @@ from task.models import Team, Worker, Project, Task
 
 
 @receiver(m2m_changed, sender=Team.workers.through)
-def update_worker_projects_and_tasks(sender, instance, action, pk_set, **kwargs):
+def update_worker_projects_and_tasks(sender, instance,
+                                     action, pk_set, **kwargs):
 
     if action == "post_remove":
         workers_removed = Worker.objects.filter(pk__in=pk_set)
@@ -13,18 +14,22 @@ def update_worker_projects_and_tasks(sender, instance, action, pk_set, **kwargs)
             related_projects = instance.projects.all()
 
             for project in related_projects:
-                worker_teams_in_project = Team.objects.filter(projects=project, workers=worker)
+                worker_teams_in_project = (
+                    Team.objects.filter(projects=project, workers=worker)
+                )
 
                 if not worker_teams_in_project.exists():
                     project.workers.remove(worker)
 
-                    tasks = Task.objects.filter(project=project, assignees=worker)
+                    tasks = (Task.objects
+                             .filter(project=project, assignees=worker))
                     for task in tasks:
                         task.assignees.remove(worker)
 
 
 @receiver(m2m_changed, sender=Project.workers.through)
-def remove_worker_from_tasks_on_project(sender, instance, action, pk_set, **kwargs):
+def remove_worker_from_tasks_on_project(sender, instance,
+                                        action, pk_set, **kwargs):
 
     if action == "post_remove":
         workers_removed = Worker.objects.filter(pk__in=pk_set)

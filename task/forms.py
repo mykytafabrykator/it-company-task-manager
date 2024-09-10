@@ -41,6 +41,7 @@ class WorkerUpdateForm(UserChangeForm):
             "last_name",
             "position",
             "teams",
+            "projects",
         )
 
     def __init__(self, *args, **kwargs):
@@ -48,18 +49,50 @@ class WorkerUpdateForm(UserChangeForm):
         worker = kwargs.get("instance")
 
         if worker:
-            team_projects = Project.objects.filter(
-                teams__in=worker.teams.all()).distinct()
-            if team_projects.exists():
-                self.fields["projects"].queryset = team_projects
-                self.fields["projects"].initial = worker.projects.all()
-            else:
-                self.fields.pop("projects")
-
-        self.fields["teams"].initial = worker.teams.all()
+            self.fields["teams"].initial = worker.teams.all()
+            self.update_projects_field(worker)
 
         if "password" in self.fields:
             del self.fields["password"]
+
+    def update_projects_field(self, worker):
+        selected_teams = worker.teams.all()
+
+        if selected_teams.exists():
+            team_projects = (Project.objects
+                             .filter(teams__in=selected_teams).distinct())
+            self.fields["projects"].queryset = team_projects
+            self.fields["projects"].initial = (
+                worker.projects.filter(teams__in=selected_teams).distinct()
+            )
+        else:
+            self.fields["projects"].widget = forms.TextInput(
+                attrs={
+                    "readonly": "readonly",
+                    "placeholder": "Select and submit a team first"
+                }
+            )
+            self.fields["projects"].label = "Projects"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        selected_teams = cleaned_data.get("teams")
+
+        selected_projects = cleaned_data.get("projects")
+        valid_projects = (
+            Project.objects.filter(teams__in=selected_teams).distinct()
+        )
+
+        if selected_projects:
+            for project in selected_projects:
+                if project not in valid_projects:
+                    self.add_error(
+                        "projects",
+                        f"Project '{project}' "
+                        "does not belong to the selected teams."
+                    )
+
+        return cleaned_data
 
 
 class TeamForm(forms.ModelForm):
