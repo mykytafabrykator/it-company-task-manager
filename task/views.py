@@ -257,7 +257,7 @@ def toggle_task_complete(request, pk):
     else:
         messages.error(
             request,
-            "You are not part of the team or project "
+            "You are not part of the project "
             "associated with this task, so "
             "you cannot assign yourself to it."
         )
@@ -277,7 +277,7 @@ def toggle_task_assign(request, pk):
     else:
         messages.error(
             request,
-            "You are not part of the team or project "
+            "You are not part of the project "
             "associated with this task, so "
             "you cannot assign yourself to it."
         )
