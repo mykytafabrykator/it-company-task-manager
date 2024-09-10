@@ -15,7 +15,7 @@
   <p>Assigned Workers:</p>
   <ul>
     {% for worker in task.assignees.all %}
-      <li>{{ worker.first_name }} {{ worker.last_name }}</li>
+      <li><a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
     {% endfor %}
   </ul>
 
