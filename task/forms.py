@@ -102,7 +102,10 @@ class WorkerUpdateForm(UserChangeForm):
         removed_projects = current_projects - selected_projects
 
         if removed_projects:
-            tasks_to_update = Task.objects.filter(project__in=removed_projects, assignees=worker)
+            tasks_to_update = (
+                Task.objects
+                .filter(project__in=removed_projects, assignees=worker)
+            )
             for task in tasks_to_update:
                 task.assignees.remove(worker)
 
