@@ -61,10 +61,21 @@ class WorkerUpdateForm(UserChangeForm):
         if selected_teams.exists():
             team_projects = (Project.objects
                              .filter(teams__in=selected_teams).distinct())
-            self.fields["projects"].queryset = team_projects
-            self.fields["projects"].initial = (
-                worker.projects.filter(teams__in=selected_teams).distinct()
-            )
+
+            if team_projects.exists():
+                self.fields["projects"].queryset = team_projects
+                self.fields["projects"].initial = (
+                    worker.projects.filter(teams__in=selected_teams).distinct()
+                )
+            else:
+                self.fields["projects"].widget = forms.TextInput(
+                    attrs={
+                        "readonly": "readonly",
+                        "placeholder": "For associated "
+                                       "teams there are no projects"
+                    }
+                )
+                self.fields["projects"].label = "Projects"
         else:
             self.fields["projects"].widget = forms.TextInput(
                 attrs={
