@@ -4,7 +4,9 @@ from task.models import Team, Worker, Project, Task
 
 
 @receiver(m2m_changed, sender=Team.projects.through)
-def handle_project_removal_from_team(sender, instance, action, pk_set, **kwargs):
+def handle_project_removal_from_team(
+        sender, instance,
+        action, pk_set, **kwargs):
     if action == "post_remove":
         removed_projects = set(pk_set)
         for project_id in removed_projects:
