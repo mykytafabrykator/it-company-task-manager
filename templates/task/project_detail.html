@@ -12,7 +12,7 @@
   <h2>Assigned Workers:</h2>
   <ul>
     {% for worker in project.workers.all %}
-      <li>{{ worker.first_name }} {{ worker.last_name }}</li>
+      <li><a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
     {% empty %}
       <li>No workers assigned to this project.</li>
     {% endfor %}
@@ -21,9 +21,18 @@
   <h2>Related Teams:</h2>
   <ul>
     {% for team in project.teams.all %}
-      <li>{{ team.name }}</li>
+      <li><a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a></li>
     {% empty %}
       <li>No teams assigned to this project.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Related Tasks:</h2>
+  <ul>
+    {% for task in project.tasks.all %}
+      <li><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }}</a></li>
+    {% empty %}
+      <li>No tasks assigned to this project.</li>
     {% endfor %}
   </ul>
 
