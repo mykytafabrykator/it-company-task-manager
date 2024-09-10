@@ -184,40 +184,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ["name", "description", "workers"]
+        fields = ("name", "description", "teams", )
         widgets = {
-            "workers": forms.CheckboxSelectMultiple,
+            "teams": forms.CheckboxSelectMultiple,
         }
-
-    def __init__(self, *args, **kwargs):
-        project = kwargs.get("instance")
-        super().__init__(*args, **kwargs)
-
-        if project:
-            self.fields["teams"].initial = project.teams.all()
-
-            teams = project.teams.all()
-            valid_workers = Worker.objects.filter(teams__in=teams).distinct()
-            self.fields["workers"].queryset = valid_workers
-        else:
-            self.fields.pop("workers")
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        if commit:
-            instance.save()
-
-        selected_workers = self.cleaned_data.get('workers', [])
-        current_workers = set(instance.workers.all())
-        selected_workers_set = set(selected_workers)
-
-        workers_to_add = selected_workers_set - current_workers
-        workers_to_remove = current_workers - selected_workers_set
-
-        if commit:
-            instance.workers.add(*workers_to_add)
-            instance.workers.remove(*workers_to_remove)
-
-        return instance
-

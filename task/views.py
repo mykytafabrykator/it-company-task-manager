@@ -171,26 +171,8 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
 
 class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Project
-    form_class = ProjectForm
+    fields = ("name", "description",)
     success_url = reverse_lazy("task:project-list")
-
-    def form_valid(self, form):
-        project = form.instance
-        current_teams = set(project.teams.all())
-        response = super().form_valid(form)
-        new_teams = set(form.cleaned_data["teams"])
-        removed_teams = current_teams - new_teams
-
-        workers_in_removed_teams = Worker.objects.filter(teams__in=removed_teams).distinct()
-
-        for worker in workers_in_removed_teams:
-            remaining_teams_for_worker = worker.teams.filter(projects=project)
-            if not remaining_teams_for_worker.exists():
-                project.workers.remove(worker)
-
-        project.teams.set(form.cleaned_data["teams"])
-
-        return response
 
 
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
