@@ -1,26 +1,105 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+
+{% block title %} Task list {% endblock title %}
+
+{% block stylesheets %}
+  <style>
+    .task-card {
+      border-radius: 12px;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+.task-priority-low {
+  color: white;
+  background-color: #28a745;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.task-priority-medium {
+  color: white;
+  background-color: orange;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.task-priority-high {
+  color: white;
+  background-color: darkred;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.task-priority-urgent {
+  color: white;
+  background-color: black;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+    .task-deadline {
+      font-weight: bold;
+    }
+  </style>
+{% endblock stylesheets %}
 
 {% block content %}
-    <h1>Tasks List <a href="{% url 'task:task-create' %}" class="btn btn-primary">Create</a></h1>
-    {% if task_list %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Deadline</th>
-        <th>Priority</th>
-      </tr>
-    {% for task in task_list %}
-      <tr>
-        <td>{{ task.id }}</td>
-        <td><a href="{% url 'task:task-detail' pk=task.id%}">{{ task.name }}</a></td>
-        <td>{{ task.deadline }}</td>
-        <td>{{ task.priority }}</td>
-      </tr>
-    {% endfor %}
 
-    </table>
-    {% else %}
-      <p>There are no tasks in the service.</p>
-    {% endif %}
-{% endblock %}
+  {% include "includes/navigation-light.html" %}
+
+  <div class="container mt-4">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1>Task List</h1>
+                  <a href="{% url 'task:task-create' %}" class="btn btn-primary">Add Task</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {% if task_list %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                {% for task in task_list %}
+                <div class="task-card">
+                    <div class="task-header">
+                        <div>
+                            <h4 class="task-deadline">{{ task.name }} (Deadline: {{ task.deadline }})</h4>
+                        </div>
+                    </div>
+                    <div class="task-details">
+                        <p>Priority: <span class="task-priority-{{ task.priority|lower }}">{{ task.priority }}</span></p>
+                        <a href="{% url 'task:task-detail' pk=task.id %}" class="text-primary icon-move-right">More about {{ task.name }}
+                            <i class="fas fa-arrow-right text-sm ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+  {% else %}
+    <p>There are no tasks in the service.</p>
+  {% endif %}
+
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}
