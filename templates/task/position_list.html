@@ -1,22 +1,85 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+
+{% block stylesheets %}
+  <style>
+    .position-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 18px;
+      text-align: left;
+    }
+    .position-table th, .position-table td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+    }
+    .position-table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+      color: #333;
+    }
+    .position-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .position-table tr:hover {
+      background-color: #f1f1f1;
+    }
+    .position-table .position-name {
+      font-weight: bold;
+    }
+    .position-table .position-description {
+      color: #6c757d;
+    }
+  </style>
+{% endblock stylesheets %}
 
 {% block content %}
-    <h1>Positions List <a href="{% url 'task:position-create' %}" class="btn btn-primary">Create</a></h1>
-    {% if position_list %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-      </tr>
-    {% for position in position_list %}
-      <tr>
-        <td>{{ position.id }}</td>
-        <td><a href="{% url 'task:position-detail' pk=position.id %}">{{ position.name }}</a></td>
-      </tr>
-    {% endfor %}
+  {% include "includes/navigation-light.html" %}
 
-    </table>
-    {% else %}
-      <p>There are no positions in the service.</p>
-    {% endif %}
-{% endblock %}
+  <div class="container mt-4">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1>Position List</h1>
+                  <a href="{% url 'task:position-create' %}" class="btn btn-primary">Add Position</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {% if position_list %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <table class="position-table">
+                    <thead>
+                        <tr>
+                            <th>Position Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for position in position_list %}
+                        <tr>
+                            <td class="position-name">{{ position.name }}</td>
+                            <td>
+                                <a href="{% url 'task:position-detail' pk=position.id %}" class="btn btn-info btn-sm">Details</a>
+                                <a href="{% url 'task:position-update' pk=position.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'task:position-delete' pk=position.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  {% else %}
+    <p>No positions found in the service.</p>
+  {% endif %}
+
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}
