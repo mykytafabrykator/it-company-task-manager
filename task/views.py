@@ -25,6 +25,7 @@ def index(request):
         "num_teams": Team.objects.count(),
         "num_positions": Position.objects.count(),
         "num_task_types": TaskType.objects.count(),
+        "num_tasks": Task.objects.count(),
     }
 
     return render(request, "task/index.html", context=context)
