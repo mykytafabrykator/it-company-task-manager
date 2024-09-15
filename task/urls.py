@@ -35,6 +35,7 @@ from task.views import (
     toggle_task_complete,
     toggle_task_assign,
     my_tasks,
+    my_projects,
 )
 
 urlpatterns = [
@@ -159,7 +160,8 @@ urlpatterns = [
         toggle_task_assign,
         name="task-toggle-assign",
     ),
-    path('my-tasks/', my_tasks, name='my-task'),
+    path("my-tasks/", my_tasks, name="my-task"),
+    path("my-projects/", my_projects, name="my-project"),
 ]
 
 app_name = "task"

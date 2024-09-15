@@ -297,3 +297,10 @@ def my_tasks(request):
     user = request.user
     tasks = Task.objects.filter(assignees=user)
     return render(request, "task/my_tasks.html", {"tasks": tasks})
+
+
+@login_required
+def my_projects(request):
+    user = request.user
+    projects = Project.objects.filter(workers=user)
+    return render(request, "task/my_projects.html", {"projects": projects})

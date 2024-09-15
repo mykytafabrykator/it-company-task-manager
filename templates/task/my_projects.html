@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>My Projects List </h1>
+    {% if projects %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+    {% for project in projects %}
+      <tr>
+        <td>{{ project.id }}</td>
+        <td><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>You`re not assigned to any project</p>
+    {% endif %}
+{% endblock %}
