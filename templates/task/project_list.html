@@ -1,22 +1,68 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+
+{% block title %} Project list {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} features-sections {% endblock body_class %}
 
 {% block content %}
-    <h1>Projects List <a href="{% url 'task:project-create' %}" class="btn btn-primary">Create</a></h1>
-    {% if project_list %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-      </tr>
-    {% for project in project_list %}
-      <tr>
-        <td>{{ project.id }}</td>
-        <td><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></td>
-      </tr>
-    {% endfor %}
 
-    </table>
-    {% else %}
-      <p>There are no projects in the service.</p>
-    {% endif %}
-{% endblock %}
+  {% include "includes/navigation-light.html" %}
+
+  <div class="container mt-4">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1>Project List</h1>
+                  <a href="{% url 'task:project-create' %}" class="btn btn-primary">Add Project</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {% if project_list %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                {% for project in project_list %}
+                <div class="position-relative border-radius-xl overflow-hidden shadow-lg mb-4">
+                    <div class="container border-bottom">
+                        <div class="row justify-space-between py-2">
+                            <div class="col-lg-3 me-auto">
+                                <p class="lead text-dark pt-1 mb-0">{{ project.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content tab-space">
+                        <div class="tab-pane active" id="project-{{ project.id }}">
+                            <section class="py-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p>{{ project.description }}</p>
+                                            <a href="{% url 'task:project-detail' pk=project.id %}" class="text-primary icon-move-right">More about {{ project.name }}
+                                                <i class="fas fa-arrow-right text-sm ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+  {% else %}
+    <p>There are no projects in the service.</p>
+  {% endif %}
+
+{% endblock content %}
+
+{% block javascripts %}
+
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+
+{% endblock javascripts %}
