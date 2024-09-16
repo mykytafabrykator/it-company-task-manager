@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
 
 {% block title %} Worker list {% endblock title %}
@@ -19,12 +20,17 @@
               </div>
           </div>
       </div>
+      <form method="GET" action="">
+        {{ search_form|crispy }}
+        <input type="submit" value="Search" class="btn bg-gradient-light w-auto me-2">
+      </form>
   </div>
 
-  {% if worker_list %}
+
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-12 mx-auto">
+              {% if worker_list %}
                 <table class="worker-table">
                     <thead>
                         <tr>
@@ -43,12 +49,12 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <p>No workers found in the service.</p>
+              {% endif %}
             </div>
         </div>
     </div>
-  {% else %}
-    <p>No workers found in the service.</p>
-  {% endif %}
 
 {% endblock content %}
 

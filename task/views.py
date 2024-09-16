@@ -11,6 +11,7 @@ from task.forms import (
     TaskForm,
     ProjectForm,
     TeamForm,
+    WorkerSearchForm,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -34,13 +35,22 @@ def index(request):
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     paginate_by = 5
+    queryset = Worker.objects.select_related("position")
 
     def get_queryset(self):
-        return Worker.objects.select_related("position") \
-            .prefetch_related(
-                "teams__projects",
-                "projects",
-            ).order_by("username")
+        form = WorkerSearchForm(self.request.GET)
+        if form.is_valid():
+            return self.queryset.filter(
+                username__icontains=form.cleaned_data["username"],
+            )
+        return self.queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkerListView, self).get_context_data(**kwargs)
+        context["search_form"] = WorkerSearchForm(
+            initial={"username": self.request.GET.get("username", "")}
+        )
+        return context
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
@@ -62,7 +72,7 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(
             Worker.objects.select_related("position")
-            .prefetch_related("teams", "projects"),
+            .prefetch_related("teams__projects"),
             pk=self.kwargs["pk"]
         )
 
