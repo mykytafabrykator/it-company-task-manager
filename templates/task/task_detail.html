@@ -1,46 +1,85 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} {{ task.name }} {% endblock title %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
+
 {% block content %}
-  <h1>Task: {{ task.name }}</h1>
-  <p>Description: {{ task.description }}</p>
-  <p>Deadline: {{ task.deadline }}</p>
-  <p>Priority: {{ task.get_priority_display }}</p>
-  <p>Task Type: {{ task.task_type.name }}</p>
+  {% include "includes/navigation-light.html" %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="detail-card">
+          <h1 class="detail-title">Task: {{ task.name }}</h1>
+          <p><strong>Description:</strong> {{ task.description }}</p>
+          <p><strong>Deadline:</strong> {{ task.deadline }}</p>
+          <p><strong>Priority:</strong> <span class="task-priority-{{ task.priority|lower }}">{{ task.get_priority_display }}</span></p>
+          <p><strong>Task Type:</strong> <a href="{% url 'task:task-type-detail' pk=task.task_type.id %}">{{ task.task_type.name }}</a></p>
 
-  <p>Is Completed:
-    <a href="{% url 'task:task-toggle-complete' task.pk %}">
-      {{ task.is_completed|yesno:"Yes,No" }}
-    </a>
-  </p>
+          <p><strong>Is Completed:</strong></p>
+          <label class="toggle-switch">
+            <input type="checkbox" id="complete-toggle" {% if task.is_completed %}checked{% endif %}>
+            <span class="slider"></span>
+          </label>
 
-  <p>Assigned Workers:</p>
-  <ul>
-    {% for worker in task.assignees.all %}
-      <li><a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
-    {% endfor %}
-  </ul>
+          <p><strong>Assigned Workers:</strong></p>
+          <ul>
+            {% for worker in task.assignees.all %}
+              <li><a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
+            {% endfor %}
+          </ul>
 
-  <!-- Toggle assignment of the current user -->
-  <p>
-    Assigned to this task:
-    <a href="{% url 'task:task-toggle-assign' task.pk %}">
-      {% if user in task.assignees.all %}
-        Yes (Click to remove)
-      {% else %}
-        No (Click to assign)
-      {% endif %}
-    </a>
-  </p>
+          <p>
+            <strong>Assigned to this task:</strong>
+            <a href="{% url 'task:task-toggle-assign' task.pk %}" class="text-primary">
+              {% if user in task.assignees.all %}
+                Yes (Click to remove)
+              {% else %}
+                No (Click to assign)
+              {% endif %}
+            </a>
+          </p>
 
-  <p>Project: <a href="{% url 'task:project-detail' task.project.pk %}">{{ task.project.name }}</a></p>
+          <p><strong>Project:</strong> <a href="{% url 'task:project-detail' task.project.pk %}">{{ task.project.name }}</a></p>
 
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
 
-  <a href="{% url 'task:task-update' task.pk %}" class="btn btn-primary">Update</a>
-  <a href="{% url 'task:task-delete' task.pk %}" class="btn btn-danger">Delete</a>
-{% endblock %}
+          <div class="btn-container">
+            <a href="{% url 'task:task-update' task.pk %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'task:task-delete' task.pk %}" class="btn btn-danger">Delete</a>
+            <button onclick="goBack()" class="btn btn-secondary">Return Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  <script>
+    document.getElementById('complete-toggle').addEventListener('change', function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "{% url 'task:task-toggle-complete' task.pk %}", true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log('Task completion status updated');
+        }
+      };
+      xhr.send();
+    });
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+{% endblock javascripts %}
