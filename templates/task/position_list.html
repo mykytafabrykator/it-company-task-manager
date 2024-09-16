@@ -37,9 +37,9 @@
                         <tr>
                             <td class="position-name">{{ position.name }}</td>
                             <td>
-                                <a href="{% url 'task:position-detail' pk=position.id %}" class="btn btn-info btn-sm">Details</a>
-                                <a href="{% url 'task:position-update' pk=position.id %}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{% url 'task:position-delete' pk=position.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{% url 'task:position-detail' pk=position.id %}" class="btn btn-info">Details</a>
+                                <a href="{% url 'task:position-update' position.pk %}" class="btn btn-primary">Update</a>
+                                <a href="{% url 'task:position-delete' position.pk %}" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                         {% endfor %}
