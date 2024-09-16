@@ -37,9 +37,9 @@
                         <tr>
                             <td class="task-type-name">{{ task_type.name }}</td>
                             <td>
-                                <a href="{% url 'task:task-type-detail' pk=task_type.id %}" class="btn btn-info btn-sm">Details</a>
-                                <a href="{% url 'task:task-type-update' pk=task_type.id %}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{% url 'task:task-type-delete' pk=task_type.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{% url 'task:task-type-detail' task_type.id %}" class="btn btn-info">Details</a>
+                                <a href="{% url 'task:task-type-update' task_type.pk %}" class="btn btn-primary">Update</a>
+                                <a href="{% url 'task:task-type-delete' task_type.pk %}" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                         {% endfor %}

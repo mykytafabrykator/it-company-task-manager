@@ -1,22 +1,53 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} {{ task_type.name }} {% endblock title %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
 
 {% block content %}
-  <h1>
-    Task Type: {{ task_type.name }}
-  </h1>
+  {% include "includes/navigation-light.html" %}
 
-  <h2>Related Tasks:</h2>
-  {% if tasks %}
-    <ul>
-      {% for task in tasks %}
-        <li>{{ task.name }} - Deadline: {{ task.deadline }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No tasks are associated with this Task Type.</p>
-  {% endif %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h2>Task Type: {{ task_type.name }}</h2>
+          </div>
+          <div class="card-body">
+            <h4>Related Tasks</h4>
+            {% if tasks %}
+              <ul class="list-group">
+                {% for task in tasks %}
+                  <li class="list-group-item">
+                    <strong><a href="{% url 'task:task-detail' task.id %}">{{ task.name }}</a></strong> - <span class="text-muted">Deadline: {{ task.deadline }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No tasks are associated with this Task Type.</p>
+            {% endif %}
+            <div class="btn-container">
+              <a href="{% url 'task:task-type-update' task_type.pk %}" class="btn btn-primary">Update</a>
+              <a href="{% url 'task:task-type-delete' task_type.pk %}" class="btn btn-danger">Delete</a>
+              <button onclick="goBack()" class="btn btn-secondary">Return Back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <a href="{% url 'task:task-type-update' pk=task_type.id %}" class="btn btn-primary">Update</a>
-  <a href="{% url 'task:task-type-delete' pk=task_type.id %}" class="btn btn-danger">Delete</a>
+{% endblock content %}
 
-{% endblock %}
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+{% endblock javascripts %}
