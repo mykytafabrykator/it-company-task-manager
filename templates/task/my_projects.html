@@ -1,22 +1,63 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} My Projects {% endblock title %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
 
 {% block content %}
-    <h1>My Projects List </h1>
-    {% if projects %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-      </tr>
-    {% for project in projects %}
-      <tr>
-        <td>{{ project.id }}</td>
-        <td><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></td>
-      </tr>
-    {% endfor %}
 
-    </table>
-    {% else %}
-      <p>You`re not assigned to any project</p>
-    {% endif %}
-{% endblock %}
+  {% include "includes/navigation-light.html" %}
+
+  <div class="container mt-4">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1>My Project List</h1>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {% if projects %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for project in projects %}
+                      <tr>
+                        <td>{{ project.id }}</td>
+                        <td>
+                          <a href="{% url 'task:project-detail' pk=project.id %}">
+                            {{ project.name }}
+                          </a>
+                        </td>
+                        <td>{{ project.description }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  {% else %}
+    <div class="container mt-4">
+        <p class="text-center">You`re not assigned to any project</p>
+    </div>
+  {% endif %}
+
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{% static 'js/soft-design-system.min.js' %}" type="text/javascript"></script>
+{% endblock javascripts %}
