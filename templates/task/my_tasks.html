@@ -1,26 +1,71 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} My Tasks {% endblock title %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
 
 {% block content %}
-    <h1>My Tasks List </h1>
-    {% if tasks %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Priority</th>
-        <th>Completed</th>
-      </tr>
-    {% for task in tasks %}
-      <tr>
-        <td>{{ task.id }}</td>
-        <td><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }}</a></td>
-        <td>{{ task.priority }}</td>
-        <td>{{ task.is_completed }}</td>
-      </tr>
-    {% endfor %}
 
-    </table>
-    {% else %}
-      <p>Happy day! No tasks!</p>
-    {% endif %}
-{% endblock %}
+  {% include "includes/navigation-light.html" %}
+
+  <div class="container mt-4">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1>My Task List</h1>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {% if tasks %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Priority</th>
+                      <th>Completed</th>
+                      <th>Deadline</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for task in tasks %}
+                      <tr>
+                        <td>{{ task.id }}</td>
+                        <td>
+                          <a href="{% url 'task:task-detail' pk=task.id %}">
+                            {{ task.name }}
+                          </a>
+                        </td>
+                        <td>
+                          <span class="task-priority-{{ task.priority|lower }}">
+                            {{ task.priority }}
+                          </span>
+                        </td>
+                        <td>{{ task.is_completed|yesno:"Yes,No" }}</td>
+                        <td>{{ task.deadline }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  {% else %}
+    <div class="container mt-4">
+        <p class="text-center">No tasks assigned</p>
+    </div>
+  {% endif %}
+
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}
