@@ -69,7 +69,7 @@
           <div class="btn-container">
             <a href="{% url 'task:worker-update' pk=worker.id %}" class="btn btn-primary">Update</a>
             <a href="{% url 'task:worker-delete' pk=worker.id %}" class="btn btn-danger">Delete</a>
-            <a href="javascript:history.back()" class="btn btn-back">Return back</a> <!-- Кнопка повернення назад -->
+            <button onclick="goBack()" class="btn btn-secondary">Return Back</button>
           </div>
         </div>
       </div>
@@ -79,4 +79,10 @@
 
 {% block javascripts %}
   <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
 {% endblock javascripts %}
