@@ -11,7 +11,7 @@ from task.forms import (
     TaskForm,
     ProjectForm,
     TeamForm,
-    WorkerSearchForm, TeamSearchForm, ProjectSearchForm,
+    WorkerSearchForm, TeamSearchForm, ProjectSearchForm, TaskSearchForm,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -266,11 +266,24 @@ class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
+    paginate_by = 5
+
+    queryset = Task.objects.select_related("project")
 
     def get_queryset(self):
-        return (Task.objects.all()
-                .select_related("project")
-                .prefetch_related("assignees"))
+        form = TaskSearchForm(self.request.GET)
+        if form.is_valid():
+            return self.queryset.filter(
+                priority__icontains=form.cleaned_data["priority"],
+            )
+        return self.queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(TaskListView, self).get_context_data(**kwargs)
+        context["search_form"] = TaskSearchForm(
+            initial={"priority": self.request.GET.get("priority", "")}
+        )
+        return context
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):

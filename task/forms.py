@@ -209,3 +209,12 @@ class ProjectSearchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )
+
+
+class TaskSearchForm(forms.Form):
+    priority = forms.CharField(
+        max_length=9,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search by priority"}),
+    )
