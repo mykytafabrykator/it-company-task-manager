@@ -1,6 +1,8 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
+{% block title %} {{ worker.first_name }} {{ worker.last_name }} {% endblock title %}
+
 {% block stylesheets %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock stylesheets %}
