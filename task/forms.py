@@ -184,7 +184,7 @@ class ProjectForm(forms.ModelForm):
         }
 
 
-class WorkerSearchForm(forms.Form):
+class SearchByUsername(forms.Form):
     username = forms.CharField(
         max_length=50,
         required=False,
@@ -193,7 +193,7 @@ class WorkerSearchForm(forms.Form):
     )
 
 
-class TeamSearchForm(forms.Form):
+class SearchByName(forms.Form):
     name = forms.CharField(
         max_length=255,
         required=False,
@@ -202,28 +202,10 @@ class TeamSearchForm(forms.Form):
     )
 
 
-class ProjectSearchForm(forms.Form):
-    name = forms.CharField(
-        max_length=255,
-        required=False,
-        label="",
-        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
-    )
-
-
-class TaskSearchForm(forms.Form):
+class SearchByPriority(forms.Form):
     priority = forms.CharField(
         max_length=9,
         required=False,
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search by priority"}),
-    )
-
-
-class PositionSearchForm(forms.Form):
-    name = forms.CharField(
-        max_length=255,
-        required=False,
-        label="",
-        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )

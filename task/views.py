@@ -11,11 +11,9 @@ from task.forms import (
     TaskForm,
     ProjectForm,
     TeamForm,
-    WorkerSearchForm,
-    TeamSearchForm,
-    ProjectSearchForm,
-    TaskSearchForm,
-    PositionSearchForm,
+    SearchByUsername,
+    SearchByPriority,
+    SearchByName,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -42,7 +40,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     queryset = Worker.objects.select_related("position")
 
     def get_queryset(self):
-        form = WorkerSearchForm(self.request.GET)
+        form = SearchByUsername(self.request.GET)
         if form.is_valid():
             return self.queryset.filter(
                 username__icontains=form.cleaned_data["username"],
@@ -51,7 +49,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(WorkerListView, self).get_context_data(**kwargs)
-        context["search_form"] = WorkerSearchForm(
+        context["search_form"] = SearchByUsername(
             initial={"username": self.request.GET.get("username", "")}
         )
         return context
@@ -122,7 +120,7 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
     queryset = Position.objects.all()
 
     def get_queryset(self):
-        form = PositionSearchForm(self.request.GET)
+        form = SearchByName(self.request.GET)
         if form.is_valid():
             return self.queryset.filter(
                 name__icontains=form.cleaned_data["name"],
@@ -131,7 +129,7 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PositionListView, self).get_context_data(**kwargs)
-        context["search_form"] = PositionSearchForm(
+        context["search_form"] = SearchByName(
             initial={"name": self.request.GET.get("name", "")}
         )
         return context
@@ -162,7 +160,7 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
     queryset = Team.objects.all()
 
     def get_queryset(self):
-        form = TeamSearchForm(self.request.GET)
+        form = SearchByName(self.request.GET)
         if form.is_valid():
             return self.queryset.filter(
                 name__icontains=form.cleaned_data["name"],
@@ -171,7 +169,7 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TeamListView, self).get_context_data(**kwargs)
-        context["search_form"] = TeamSearchForm(
+        context["search_form"] = SearchByName(
             initial={"name": self.request.GET.get("name", "")}
         )
         return context
@@ -202,7 +200,7 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
     queryset = Project.objects.all()
 
     def get_queryset(self):
-        form = ProjectSearchForm(self.request.GET)
+        form = SearchByName(self.request.GET)
         if form.is_valid():
             return self.queryset.filter(
                 name__icontains=form.cleaned_data["name"],
@@ -211,7 +209,7 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
-        context["search_form"] = TeamSearchForm(
+        context["search_form"] = SearchByName(
             initial={"name": self.request.GET.get("name", "")}
         )
         return context
@@ -251,6 +249,22 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
     context_object_name = "task_type_list"
     template_name = "task/task_type_list.html"
+    queryset = TaskType.objects.all()
+
+    def get_queryset(self):
+        form = SearchByName(self.request.GET)
+        if form.is_valid():
+            return self.queryset.filter(
+                name__icontains=form.cleaned_data["name"],
+            )
+        return self.queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(TaskTypeListView, self).get_context_data(**kwargs)
+        context["search_form"] = SearchByName(
+            initial={"name": self.request.GET.get("name", "")}
+        )
+        return context
 
 
 class TaskTypeDetailView(LoginRequiredMixin, generic.DetailView):
@@ -292,7 +306,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     queryset = Task.objects.select_related("project")
 
     def get_queryset(self):
-        form = TaskSearchForm(self.request.GET)
+        form = SearchByPriority(self.request.GET)
         if form.is_valid():
             return self.queryset.filter(
                 priority__icontains=form.cleaned_data["priority"],
@@ -301,7 +315,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TaskListView, self).get_context_data(**kwargs)
-        context["search_form"] = TaskSearchForm(
+        context["search_form"] = SearchByPriority(
             initial={"priority": self.request.GET.get("priority", "")}
         )
         return context
