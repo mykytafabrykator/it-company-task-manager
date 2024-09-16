@@ -1,12 +1,39 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
 {% load crispy_forms_filters %}
 
-{% block content %}
-  <h1>{{ object|yesno:"Update,Create" }} worker</h1>
-  <form action="" method="post" novalidate>
-    {% csrf_token %}
-    {{ form|crispy }}
+{% block title %} {{ object|yesno:"Update,Create" }} Worker {% endblock title %}
 
-    <input type="submit" value="Submit" class="btn btn-primary">
-  </form>
-{% endblock %}
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+  {% include "includes/navigation-light.html" %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="card">
+          <div class="card-header">
+            <h2>{{ object|yesno:"Update,Create" }} Worker</h2>
+          </div>
+          <div class="card-body">
+            <form action="" method="post" novalidate>
+              {% csrf_token %}
+              {{ form|crispy }}
+
+              <div class="form-group mt-3">
+                <input type="submit" value="Submit" class="btn btn-primary">
+                <a href="{% url 'task:worker-list' %}" class="btn btn-secondary">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}
