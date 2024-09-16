@@ -1,41 +1,89 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} {{ project.name }} {% endblock title %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
 
 {% block content %}
-  <h1>Project: {{ project.name }}</h1>
+  {% include "includes/navigation-light.html" %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="detail-card">
+          <h1 class="detail-title">Project: {{ project.name }}</h1>
 
-  {% if project.description %}
-    <p><strong>Description:</strong> {{ project.description }}</p>
-  {% else %}
-    <p><em>No description available for this project.</em></p>
-  {% endif %}
+          <div class="project-info">
+            {% if project.description %}
+              <p><strong>Description:</strong> {{ project.description }}</p>
+            {% else %}
+              <p><em>No description available for this project.</em></p>
+            {% endif %}
+          </div>
 
-  <h2>Assigned Workers:</h2>
-  <ul>
-    {% for worker in project.workers.all %}
-      <li><a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
-    {% empty %}
-      <li>No workers assigned to this project.</li>
-    {% endfor %}
-  </ul>
+          <div class="project-info">
+            <h2 class="section-title">Assigned Workers</h2>
+            {% if project.workers.all %}
+              <ul class="list-group">
+                {% for worker in project.workers.all %}
+                  <li class="list-group-item">
+                    <a href="{% url 'task:worker-detail' pk=worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No workers assigned to this project.</p>
+            {% endif %}
+          </div>
 
-  <h2>Related Teams:</h2>
-  <ul>
-    {% for team in project.teams.all %}
-      <li><a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a></li>
-    {% empty %}
-      <li>No teams assigned to this project.</li>
-    {% endfor %}
-  </ul>
+          <div class="project-info mt-4">
+            <h2 class="section-title">Related Teams</h2>
+            {% if project.teams.all %}
+              <ul class="list-group">
+                {% for team in project.teams.all %}
+                  <li class="list-group-item">
+                    <a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No teams assigned to this project.</p>
+            {% endif %}
+          </div>
 
-  <h2>Related Tasks:</h2>
-  <ul>
-    {% for task in project.tasks.all %}
-      <li><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }}</a></li>
-    {% empty %}
-      <li>No tasks assigned to this project.</li>
-    {% endfor %}
-  </ul>
+          <div class="project-info mt-4">
+            <h2 class="section-title">Related Tasks</h2>
+            {% if project.tasks.all %}
+              <ul class="list-group">
+                {% for task in project.tasks.all %}
+                  <li class="list-group-item">
+                    <a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No tasks assigned to this project.</p>
+            {% endif %}
+          </div>
 
-  <a href="{% url 'task:project-update' pk=project.id %}" class="btn btn-primary">Update</a>
-  <a href="{% url 'task:project-delete' pk=project.id %}" class="btn btn-danger">Delete</a>
-{% endblock %}
+          <div class="btn-container mt-4">
+            <a href="{% url 'task:project-update' pk=project.id %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'task:project-delete' pk=project.id %}" class="btn btn-danger">Delete</a>
+            <button onclick="goBack()" class="btn btn-secondary">Return Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+{% endblock javascripts %}
