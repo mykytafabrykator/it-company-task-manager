@@ -1,53 +1,80 @@
-{% extends "base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
 
 {% block content %}
-  <h1>
-    Username: {{ worker.username }}
-  </h1>
+  {% include "includes/navigation-light.html" %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="worker-detail-card">
+          <h1>{{ worker.first_name }} {{ worker.last_name }}</h1>
+          <p class="text-muted"><strong>Username:</strong> {{ worker.username }}</p>
+          <p><strong>Position:</strong> {{ worker.position }}</p>
 
-  <p><strong>First name:</strong> {{ worker.first_name }}</p>
-  <p><strong>Last name:</strong> {{ worker.last_name }}</p>
-  <p><strong>Position:</strong> {{ worker.position }}</p>
+          <div class="worker-info">
+            {% if worker.teams.all %}
+              <p><strong>Teams:</strong></p>
+              <ul>
+                {% for team in worker.teams.all %}
+                  <li><a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a></li>
+                {% empty %}
+                  <li>No teams assigned.</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No teams assigned.</p>
+            {% endif %}
+          </div>
 
-    {% if worker.teams.all %}
-      <p><strong>Teams:</strong></p>
-      <ul>
-        {% for team in worker.teams.all %}
-          <li><a href="{% url 'task:team-detail' pk=team.id %}">{{ team.name }}</a></li>
-        {% empty %}
-          <li>No teams assigned.</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      No teams assigned. <br>
-    {% endif %}
+          <div class="worker-info">
+            {% if worker.projects.all %}
+              <p><strong>Projects:</strong></p>
+              <ul>
+                {% for project in worker.projects.all %}
+                  <li><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></li>
+                {% empty %}
+                  <li>No projects assigned.</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No projects assigned.</p>
+            {% endif %}
+          </div>
 
-  {% if worker.projects.all %}
-    <p><strong>Projects:</strong></p>
-    <ul>
-      {% for project in worker.projects.all %}
-        <li><a href="{% url 'task:project-detail' pk=project.id %}">{{ project.name }}</a></li>
-      {% empty %}
-        <li>No projects assigned.</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    No projects assigned. <br>
-  {% endif %}
+          <div class="worker-info">
+            {% if worker.assigned_tasks.all %}
+              <p><strong>Assigned Tasks:</strong></p>
+              <ul>
+                {% for task in worker.assigned_tasks.all %}
+                  <li>
+                    <a href="{% url 'task:task-detail' pk=task.id %}">
+                      {{ task.name }} (Deadline: {{ task.deadline }} - Project: {{ task.project.name }})
+                    </a>
+                  </li>
+                {% empty %}
+                  <li>No tasks assigned.</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No tasks assigned.</p>
+            {% endif %}
+          </div>
 
-  {% if worker.assigned_tasks.all %}
-    <p><strong>Assigned Tasks:</strong></p>
-    <ul>
-      {% for task in worker.assigned_tasks.all %}
-        <li><a href="{% url 'task:task-detail' pk=task.id %}">{{ task.name }} (Deadline: {{ task.deadline }} - Project: {{ task.project.name }})</a></li>
-      {% empty %}
-        <li>No tasks assigned.</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    No tasks assigned. <br>
-  {% endif %}
+          <div class="btn-container">
+            <a href="{% url 'task:worker-update' pk=worker.id %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'task:worker-delete' pk=worker.id %}" class="btn btn-danger">Delete</a>
+            <a href="javascript:history.back()" class="btn btn-back">Return back</a> <!-- Кнопка повернення назад -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
 
-  <a href="{% url 'task:worker-update' pk=worker.id %}" class="btn btn-primary">Update</a>
-  <a href="{% url 'task:worker-delete' pk=worker.id %}" class="btn btn-danger">Delete</a>
-{% endblock %}
+{% block javascripts %}
+  <script src="{{ ASSETS_ROOT }}/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}
