@@ -1,39 +1,10 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} Task Type list {% endblock title %}
 
 {% block stylesheets %}
-  <style>
-    .task-type-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 18px;
-      text-align: left;
-    }
-    .task-type-table th, .task-type-table td {
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-    }
-    .task-type-table th {
-      background-color: #f8f9fa;
-      font-weight: bold;
-      color: #333;
-    }
-    .task-type-table tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    .task-type-table tr:hover {
-      background-color: #f1f1f1;
-    }
-    .task-type-table .task-type-name {
-      font-weight: bold;
-    }
-    .task-type-table .task-type-action {
-      text-align: center;
-    }
-    .task-type-table .action-link {
-      margin-right: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock stylesheets %}
 
 {% block content %}

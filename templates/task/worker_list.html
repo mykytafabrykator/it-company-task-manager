@@ -1,44 +1,10 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} Worker list {% endblock title %}
 
 {% block stylesheets %}
-  <style>
-    .worker-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 18px;
-      text-align: left;
-    }
-    .worker-table th, .worker-table td {
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-    }
-    .worker-table th {
-      background-color: #f8f9fa;
-      font-weight: bold;
-      color: #333;
-    }
-    .worker-table tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    .worker-table tr:hover {
-      background-color: #f1f1f1;
-    }
-    .worker-table .worker-name {
-      font-weight: bold;
-    }
-    .worker-table .worker-role {
-      color: #6c757d;
-    }
-    .worker-table .worker-name a {
-      font-weight: bold;
-      color: #007bff;
-      text-decoration: none;
-    }
-    .worker-table .worker-name a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock stylesheets %}
 
 {% block content %}

@@ -1,36 +1,10 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} Position list {% endblock title %}
 
 {% block stylesheets %}
-  <style>
-    .position-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 18px;
-      text-align: left;
-    }
-    .position-table th, .position-table td {
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-    }
-    .position-table th {
-      background-color: #f8f9fa;
-      font-weight: bold;
-      color: #333;
-    }
-    .position-table tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    .position-table tr:hover {
-      background-color: #f1f1f1;
-    }
-    .position-table .position-name {
-      font-weight: bold;
-    }
-    .position-table .position-description {
-      color: #6c757d;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock stylesheets %}
 
 {% block content %}
