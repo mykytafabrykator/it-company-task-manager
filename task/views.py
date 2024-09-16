@@ -11,7 +11,11 @@ from task.forms import (
     TaskForm,
     ProjectForm,
     TeamForm,
-    WorkerSearchForm, TeamSearchForm, ProjectSearchForm, TaskSearchForm,
+    WorkerSearchForm,
+    TeamSearchForm,
+    ProjectSearchForm,
+    TaskSearchForm,
+    PositionSearchForm,
 )
 from task.models import Worker, Project, Team, Position, TaskType, Task
 
@@ -114,6 +118,23 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
 class PositionListView(LoginRequiredMixin, generic.ListView):
     model = Position
     paginate_by = 5
+
+    queryset = Position.objects.all()
+
+    def get_queryset(self):
+        form = PositionSearchForm(self.request.GET)
+        if form.is_valid():
+            return self.queryset.filter(
+                name__icontains=form.cleaned_data["name"],
+            )
+        return self.queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(PositionListView, self).get_context_data(**kwargs)
+        context["search_form"] = PositionSearchForm(
+            initial={"name": self.request.GET.get("name", "")}
+        )
+        return context
 
 
 class PositionDetailView(LoginRequiredMixin, generic.DetailView):
