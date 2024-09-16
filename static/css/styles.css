@@ -1,0 +1,46 @@
+.worker-detail-card {
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.worker-detail-card h1 {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.worker-info {
+  margin-bottom: 20px;
+}
+
+.worker-info p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.worker-info strong {
+  color: #495057;
+}
+
+.worker-info ul {
+  padding-left: 20px;
+}
+
+.worker-info ul li {
+  margin-bottom: 8px;
+}
+
+.btn-container {
+  margin-top: 20px;
+}
+
+.btn-container a {
+  margin-right: 10px;
+}
+
+.btn-container .btn-back {
+  background-color: #6c757d;
+  color: white;
+}
