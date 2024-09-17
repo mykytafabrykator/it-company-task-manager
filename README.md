@@ -18,6 +18,17 @@ python3 -m venv venv
 source venv/bin/activate (on macOS)
 venv/Scripts/activate (on Windows)
 pip install -r requirements.txt
+```
+
+Create a `.env` file in the root directory of the project and copy the contents from `.env.sample`, replacing the placeholder values with your own:
+
+```shell
+cp .env.sample .env
+```
+
+You`re ready to start
+
+```shell
 python manage.py runserver
 ```
 
