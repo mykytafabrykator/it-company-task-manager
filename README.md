@@ -3,9 +3,9 @@
 This Task Management System, developed using Django, aims to streamline the organization of workers, teams, projects, and tasks in an IT company.
 The system enables efficient assignment, monitoring, and management of tasks across various teams and projects, ensuring clear communication and progress tracking.
 
-## Check it out! (later...)
+## Check it out!
 
-[IT company task manager project deployed to render](https://github.com/mykytafabrykator/it-company-task-manager)
+[IT company task manager project deployed to render](https://it-company-task-manager-scrm.onrender.com/)
 
 # Installation
 
