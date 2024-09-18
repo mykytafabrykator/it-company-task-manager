@@ -37,10 +37,6 @@ ALLOWED_HOSTS = [
     "it-company-task-manager-scrm.onrender.com",
 ]
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -163,7 +159,6 @@ LOGOUT_REDIRECT_URL = "/"
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
