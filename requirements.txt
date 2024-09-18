@@ -73,4 +73,5 @@ urllib3==2.2.3
 validus==0.3.0
 wcwidth==0.2.13
 webencodings==0.5.1
+whitenoise==6.7.0
 yarg==0.1.9
